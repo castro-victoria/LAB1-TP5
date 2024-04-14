@@ -2,16 +2,21 @@
 package trabajopractico5;
 
 import Entidades.Producto;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
 public class vista extends javax.swing.JFrame {
-    private DefaultTableModel modelo= new DefaultTableModel();
-    
+    private DefaultTableModel modelo= new DefaultTableModel(){
+        public boolean isCellEditable(int fila, int col){
+            return false;
+        }
+    };
     
     public vista() {
         initComponents();
         armarCabecera();
+     
     }
 
     @SuppressWarnings("unchecked")
@@ -32,15 +37,21 @@ public class vista extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gestion de Productos");
+        setResizable(false);
 
+        jLCategoria.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLCategoria.setText("Categoría:");
 
+        jLnombre.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLnombre.setText("Nombre:");
 
+        jLprecio.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLprecio.setText("Precio:");
 
         jCcategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Electronica", "Indumentaria", "Alimentos" }));
 
+        jbAgregar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jbAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagen/icons8.png"))); // NOI18N
         jbAgregar.setText("Agregar");
         jbAgregar.addActionListener(new java.awt.event.ActionListener() {
@@ -114,6 +125,9 @@ public class vista extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTproductos);
 
         jLabel1.setFont(new java.awt.Font("Georgia", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagen/Gestion productos.png"))); // NOI18N
         jLabel1.setText("Gestion de Productos");
 
         jDesktopPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -131,51 +145,61 @@ public class vista extends javax.swing.JFrame {
                         .addComponent(jScrollPane1))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGap(129, 129, 129)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
+            .addComponent(jDesktopPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAgregarActionPerformed
-        String nombre=jTnombre.getText();
-        String categoria=(String)jCcategoria.getSelectedItem();
-        double precio=Double.parseDouble(jTprecio.getText());
+       
+        try{
+            double precio=Double.parseDouble(jTprecio.getText());
+            if(jTnombre.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this, "Debe ingresar el nombre del Producto");
+                return;
+            }
+            String nombre=jTnombre.getText();
+            String categoria=(String)jCcategoria.getSelectedItem();
+            Producto produ=new Producto(nombre,categoria,precio);
+            cargarDatos(produ);
+            jTnombre.setText("");
+            jTprecio.setText("");
+        }
         
-        Producto produ=new Producto(nombre,categoria,precio);
-        cargarDatos(produ);
-        jTnombre.setText("");
-        jTprecio.setText("");
+        catch(NumberFormatException nf){
+            JOptionPane.showMessageDialog(this, "El precio debe ser un valor numerico");
+            
+        }
         
     }//GEN-LAST:event_jbAgregarActionPerformed
 
@@ -233,6 +257,7 @@ public class vista extends javax.swing.JFrame {
         modelo.addColumn("Precio");
         
         jTproductos.setModel(modelo);
+        
     
     }
     
